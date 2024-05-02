@@ -3,6 +3,7 @@
 import cv2
 
 image_corners = []
+camera_index = 0
 
 # List available cameras
 def list_available_cameras():
@@ -32,6 +33,7 @@ def select_camera(camera_list):
     for i, cam in enumerate(camera_list):
         print(f"{i}: {cam}")
     try:
+        global camera_index
         camera_index = int(input("Enter camera index: "))
     except ValueError:
         print("Invalid input, please enter an integer")
@@ -44,11 +46,11 @@ def select_camera(camera_list):
 # Test select_camera
 def test_select_camera():
     cameras = list_available_cameras()
-    selected_camera = select_camera(cameras)
-    print(f"Selected camera: {selected_camera}")
+    select_camera(cameras)
+    print(f"Selected camera: {camera_index}")
 
 # Manual camera focus
-def manual_focus(camera_index):
+def manual_focus():
     # Open camera with camera_index, show camera preview, and allow user to adjust focus
     cap = cv2.VideoCapture(camera_index)
     cv2.namedWindow("Adjust Focus", cv2.WINDOW_NORMAL)
@@ -70,11 +72,11 @@ def manual_focus(camera_index):
 # Test manual_focus
 def test_manual_focus():
     cameras = list_available_cameras()
-    selected_camera = select_camera(cameras)
-    manual_focus(selected_camera)
+    select_camera(cameras)
+    manual_focus()
 
 # Take picture using selected camera and return image
-def take_picture(camera_index):
+def take_picture():
     cap = cv2.VideoCapture(camera_index)
     ret, frame = cap.read()
     cap.release()
@@ -83,8 +85,8 @@ def take_picture(camera_index):
 # Test take_picture
 def test_take_picture():
     cameras = list_available_cameras()
-    selected_camera = select_camera(cameras)
-    image = take_picture(selected_camera)
+    select_camera(cameras)
+    image = take_picture()
     cv2.imshow("Image", image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
@@ -105,16 +107,16 @@ def select_text_boundaries(frame):
 # Test select_text_boundaries
 def test_select_text_boundaries():
     cameras = list_available_cameras()
-    selected_camera = select_camera(cameras)
-    select_text_boundaries(take_picture(selected_camera))
+    select_camera(cameras)
+    select_text_boundaries(take_picture())
     print(f"Selected points: {image_corners}")
 
 # Run sample calibration test to approve calibration
 def calibration():
     cameras = list_available_cameras()
-    selected_camera = select_camera(cameras)
-    manual_focus(selected_camera)
-    image = take_picture(selected_camera)
+    select_camera(cameras)
+    manual_focus()
+    image = take_picture()
     select_text_boundaries(image)
     #show image cropped to selected points
     cropped_image = image[image_corners[0][1]:image_corners[1][1], image_corners[0][0]:image_corners[1][0]]
@@ -130,7 +132,7 @@ def calibration():
     cv2.destroyAllWindows()
 
 # Take picture using selected camera and return image within selected text boundaries
-def take_picture_cropped(camera_index):
+def take_picture_cropped():
     cap = cv2.VideoCapture(camera_index)
     ret, frame = cap.read()
     cap.release()
@@ -139,7 +141,7 @@ def take_picture_cropped(camera_index):
 
 def test_take_picture_cropped():
     calibration()
-    image = take_picture_cropped(selected_camera)
+    image = take_picture_cropped()
     cv2.imshow("Image", image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
