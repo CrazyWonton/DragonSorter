@@ -151,4 +151,4 @@ def test_take_picture_cropped():
 #test_manual_focus()
 #test_take_picture()
 #test_select_text_boundaries()
-calibration()
+#calibration()
